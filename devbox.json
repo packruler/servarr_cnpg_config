@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.2/.schema/devbox.schema.json",
+  "packages": [],
+  "env": {
+    "EDITOR": "code -w",
+    "GIT_EDITOR": "code -w",
+    "HISTDIR": "$DEVBOX_PROJECT_ROOT/.devbox"
+  },
+  "shell": {}
+}
