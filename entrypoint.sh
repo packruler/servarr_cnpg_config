@@ -8,7 +8,7 @@ echo "Updating config.xml with secrets in ${SECRET_PATH}"
 if [ "${VERBOSE}" == "true" ]; then
   echo "Current config.xml:"
   cat /config/config.xml
-  
+
   stat /config/config.xml
 fi
 
@@ -30,8 +30,13 @@ if [[ $? -ne 0 || -z "$RESULT" ]]; then
   exit 1
 fi
 
-echo "${RESULT}" >/config/config.xml
-echo "Config updated successfully."
+if [[ "${DRY_RUN}" != "true" ]]; then
+  echo "${RESULT}" >/config/config.xml
+  echo "Config updated successfully."
+else
+  echo "Dry run mode is on, not applying changes."
+  exit 0
+fi
 
 if [ "${VERBOSE}" == "true" ]; then
   echo "Updated config.xml:"
