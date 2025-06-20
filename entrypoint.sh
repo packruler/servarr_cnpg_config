@@ -30,15 +30,15 @@ if [[ $? -ne 0 || -z "$RESULT" ]]; then
   exit 1
 fi
 
+if [ "${VERBOSE}" == "true" ]; then
+  echo "Updated config.xml:"
+  echo "${RESULT}"
+fi
+
 if [[ "${DRY_RUN}" != "true" ]]; then
   echo "${RESULT}" >/config/config.xml
   echo "Config updated successfully."
 else
   echo "Dry run mode is on, not applying changes."
   exit 0
-fi
-
-if [ "${VERBOSE}" == "true" ]; then
-  echo "Updated config.xml:"
-  cat /config/config.xml
 fi
