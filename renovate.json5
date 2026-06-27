@@ -1,0 +1,44 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+  ],
+  ignoreDeps: [
+    'harbor.packruler.com/library/ai_model_server',
+    'harbor.packruler.com/library/minio-mc',
+    'ghcr.io/luigi311/jellyplex-watched',
+  ],
+  ignoreTests: true,
+  ignorePaths: [
+    'clusters/beast-cluster/flux-system/gotk-components.yaml',
+  ],
+  packageRules: [
+    {
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+        'pin',
+        'digest',
+      ],
+      automerge: false,
+    },
+  ],
+  flux: {
+    managerFilePatterns: [
+      '/(apps|clusters|infrastructure)/.*\\.ya?ml$/',
+    ],
+  },
+  kubernetes: {
+    managerFilePatterns: [
+      '/(apps|infrastructure)/.*\\.ya?ml$/',
+    ],
+  },
+  enabledManagers: [
+    'dockerfile',
+    'flux',
+    'github-actions',
+    'helm-values',
+    'kubernetes',
+    'kustomize',
+  ],
+}
