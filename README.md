@@ -16,7 +16,7 @@ The Docker image is automatically built and published to GitHub Container Regist
 ### Usage
 
 ```bash
-docker pull ghcr.io/[your-username]/servarr_cnpg_config:latest
+docker pull ghcr.io/packruler/servarr_cnpg_config:latest
 ```
 
 ## GitHub Actions Workflows
