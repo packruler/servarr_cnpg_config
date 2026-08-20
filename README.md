@@ -2,6 +2,52 @@
 
 This is a simple container that updates the config files for Radarr, Sonarr, Lidarr, and Readarr to use the secret values from CloudNative Postgres (CNPG) instead of the hardcoded values in the config files.
 
+## What it sets
+
+The container reads a CloudNativePG connection secret mounted at
+`/run/secrets/cnpg` and writes these elements into `/config/config.xml`:
+
+| Element | Secret key |
+|---|---|
+| `PostgresPassword` | `password` |
+| `PostgresUser` | `username` |
+| `PostgresHost` | `host` |
+| `PostgresPort` | `port` |
+| `PostgresMainDb` | `dbname` |
+| `PostgresLogDb` | `logdb`, or `<dbname>_log` when that key is absent |
+
+An element whose secret key is missing is left as-is.
+
+### The log database
+
+CNPG provisions a single database per cluster and names it in `dbname`.
+Servarr needs a second one for logs and, when `<PostgresLogDb>` is absent,
+falls back to a compiled-in default (`radarr-log`, `sonarr-log`, ...). That
+default is identical for every instance of an app, so several servarr apps
+sharing one Postgres cluster would all target the same log database.
+
+Set a `logdb` key on the secret to name it explicitly. Otherwise it is
+derived as `<dbname>_log`, which is distinct as long as `dbname` is.
+
+Neither database is created here. Servarr connects with the role from the
+secret, which does not need `CREATEDB` -- provision both databases up front.
+
+### Missing elements
+
+Elements are created when absent, not only updated. Servarr reads these
+values with `persist: false` and never writes them back, so a config.xml
+that has not been pre-seeded has no element to update -- an update-only
+edit would silently leave the app on its defaults.
+
+## Configuration
+
+| Variable | Default | Effect |
+|---|---|---|
+| `SECRET_PATH` | `/run/secrets/cnpg` | Directory holding the mounted secret |
+| `CONFIG_PATH` | `/config/config.xml` | Config file to rewrite |
+| `VERBOSE` | unset | Print the config before and after |
+| `DRY_RUN` | unset | Compute the result but do not write it |
+
 ## Docker Image
 
 The Docker image is automatically built and published to GitHub Container Registry (ghcr.io) using GitHub Actions.
